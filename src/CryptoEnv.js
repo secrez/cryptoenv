@@ -63,23 +63,6 @@ class CryptoEnv {
     }
   }
 
-  filter(variables, how) {
-    let filtered = {};
-    for (let key in variables) {
-      if (typeof how === "function") {
-        if (!how(key)) {
-          continue;
-        }
-      } else if (Object.prototype.toString.call(how) === "[object RegExp]") {
-        if (!how.test(key)) {
-          continue;
-        }
-      }
-      filtered[key] = variables[key];
-    }
-    return filtered;
-  }
-
   async newKey() {
     let { variable } = await inquirer.prompt([
       {
@@ -153,23 +136,28 @@ class CryptoEnv {
       ) {
         let value = process.env[key];
         key = key.split(this.prefix)[1];
-        if (filter && ((typeof filter === "function" && !filter(key)) || (
-          Object.prototype.toString.call(filter) && !filter.test(key)
-        ))) {
-            continue;
-          }
-        this.keys[key]= value;
+        if (
+          !filter ||
+          ((typeof filter === "function" && filter(key)) ||
+            (Object.prototype.toString.call(filter) && filter.test && filter.test(key)))
+        ) {
+          this.keys[key] = value;
+        }
       }
     }
     if (Object.keys(this.keys).length === 0) {
       console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
     }
     if (!password) {
-      const prompt = require('prompt-sync')({});
-      console.log(chalk.green("CryptoEnv > Type your password to decrypt the env"));
+      const prompt = require("prompt-sync")({});
+      console.log(
+        chalk.green(
+          "CryptoEnv > Type your password to decrypt the env, or press enter to skip it"
+        )
+      );
       password = prompt.hide();
       if (!password) {
-        return console.log(chalk.grey("CryptoEnv > decription skipped"));
+        return console.log(chalk.grey("CryptoEnv > decryption skipped"));
       }
     }
     this.decryptAll(filter, password);
@@ -178,19 +166,21 @@ class CryptoEnv {
   decryptAll(filter, password) {
     let found = 0;
     for (let key in this.keys) {
-        try {
-          process.env[key] = Crypto.decrypt(
-            this.keys[key],
-            Crypto.SHA3(password)
-          );
-          found++;
-        } catch (e) {
-          console.log(chalk.red("Wrong password"));
-          process.exit(1);
-        }
+      try {
+        process.env[key] = Crypto.decrypt(
+          this.keys[key],
+          Crypto.SHA3(password)
+        );
+        found++;
+      } catch (e) {
+        console.log(chalk.red("Wrong password"));
+        process.exit(1);
+      }
     }
     if (found) {
-      console.info(chalk.green(`CryptoEnv > ${found} key${found > 1 ? "s" : ""} decrypted`));
+      console.info(
+        chalk.green(`CryptoEnv > ${found} key${found > 1 ? "s" : ""} decrypted`)
+      );
     } else {
       console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
     }

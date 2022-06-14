@@ -38,6 +38,7 @@ cryptoEnv_OWNER_KEY=vnJSFJ5E4ZHT1hd8tmMduc1HbQqmkXE/dReUmjHFvud5DsquU6VrOZ+1K3wF
 ### In your node app
 
 Install it as usual
+
 ```
 npm i cryptoenv
 ```
@@ -56,18 +57,18 @@ later in the file, when you configure Hardhat to use your private keys, you can 
     ropsten: {
       url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
       accounts: [
-        process.env.OWNER_KEY || process.env.OTHER_PRIVATE_KEY
+        process.env.OWNER_KEY
       ],
       chainId: 3
     },
     ...
 ```
 
-This way, if the key is decrypted and available, Hardhat will use it, if not it will use some other key.
-
 If you just press enter when asked for the password, the decryption will be ignored. CryptoEnv will throw an error only if the password is wrong.
 
-Notice that, while Hardhood allows different passwords for different keys, putting the data in the `~/hardhood` folder, CryptoEnv manages an `.env` file, and it makes more sense to use the same password for all the variables.
+To avoid that Hardhat gives you an error when you skip the decryption, you can set up a variable OWNER_KEY in the `.env` file, with a testing key. When you will use CryptoEnv, the variable will be overwritten.
+
+Notice that after saving the first encrypted key, for all the others you must use the same password.
 
 ### Multiple apps
 
@@ -118,6 +119,7 @@ Options:
 
 ## License
 
-~~~~~~~~MIT — enjoy it :-)
+```MIT — enjoy it :-)
 
 
+```
