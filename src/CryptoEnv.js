@@ -128,6 +128,9 @@ class CryptoEnv {
     // for testing only. Do not pass a password, please.
     password
   ) {
+    if (process.env.__decryptionAlreadyDone__) {
+      return;
+    }
     this.keys = {};
     for (let key in process.env) {
       if (
@@ -138,8 +141,10 @@ class CryptoEnv {
         key = key.split(this.prefix)[1];
         if (
           !filter ||
-          ((typeof filter === "function" && filter(key)) ||
-            (Object.prototype.toString.call(filter) && filter.test && filter.test(key)))
+          (typeof filter === "function" && filter(key)) ||
+          (Object.prototype.toString.call(filter) &&
+            filter.test &&
+            filter.test(key))
         ) {
           this.keys[key] = value;
         }
@@ -147,17 +152,21 @@ class CryptoEnv {
     }
     if (Object.keys(this.keys).length === 0) {
       console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
+      process.env.__decryptionAlreadyDone__ = "TRUE";
+      return;
     }
     if (!password) {
       const prompt = require("prompt-sync")({});
-      console.log(
+      console.info(
         chalk.green(
           "CryptoEnv > Type your password to decrypt the env, or press enter to skip it"
         )
       );
       password = prompt.hide();
       if (!password) {
-        return console.log(chalk.grey("CryptoEnv > decryption skipped"));
+        console.info(chalk.grey("CryptoEnv > decryption skipped"));
+        process.env.__decryptionAlreadyDone__ = "TRUE";
+        return;
       }
     }
     this.decryptAll(filter, password);
@@ -173,7 +182,7 @@ class CryptoEnv {
         );
         found++;
       } catch (e) {
-        console.log(chalk.red("Wrong password"));
+        console.info(chalk.red("Wrong password"));
         process.exit(1);
       }
     }
@@ -184,6 +193,7 @@ class CryptoEnv {
     } else {
       console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
     }
+    process.env.__decryptionAlreadyDone__ = "TRUE";
   }
 
   async save(key, value) {
