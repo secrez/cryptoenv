@@ -92,9 +92,9 @@ describe("CryptoEnv", async function () {
       let cryptoEnv = new CryptoEnv();
       cryptoEnv.parse(/argoPlan/, password);
       expect(process.env.myKey).equal(undefined);
+      delete process.env.__decryptionAlreadyDone__;
       cryptoEnv.parse(/key/i, password);
       expect(process.env.myKey).equal(value);
-
     });
 
     it("should parse with a filter (function)", async function () {
@@ -104,9 +104,9 @@ describe("CryptoEnv", async function () {
       let cryptoEnv = new CryptoEnv();
       cryptoEnv.parse(() => process.env.nodeENV !== "test", password);
       expect(process.env.myKey).equal(undefined);
+      delete process.env.__decryptionAlreadyDone__;
       cryptoEnv.parse(() => process.env.nodeENV === "test", password);
       expect(process.env.myKey).equal(value);
-
     });
 
     it.skip("should parse the .env file and decrypt the variables", async function () {
