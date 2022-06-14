@@ -13,7 +13,7 @@ Many tools use env variable to manage critical processes. Take for example [Hard
 To set up your encrypted variables, you must install CryptoEnv globally
 
 ```
-npm i -g envcrypto
+npm i -g cryptoenv
 ```
 
 Then, to create a new encrypted env variable for `OWNER_KEY` move in the folder where you app is, and run
