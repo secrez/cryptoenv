@@ -1,0 +1,7 @@
+# Ignore artifacts:
+coverage
+_sullof
+tmp
+pnpm-lock.yaml
+package-lock.json
+.nyc_output

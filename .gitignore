@@ -1,0 +1,11 @@
+node_modules
+tmp
+coverage
+.nyc_output
+
+# I prefere to use pnpm
+package-lock.json
+
+.cryptoenv-store.json
+hardhat.config.js
+.env
