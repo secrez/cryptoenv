@@ -37,6 +37,11 @@ cryptoEnv_OWNER_KEY=vnJSFJ5E4ZHT1hd8tmMduc1HbQqmkXE/dReUmjHFvud5DsquU6VrOZ+1K3wF
 
 ### In your node app
 
+Install it as usual
+```
+npm i cryptoenv
+```
+
 Let's do the case of Hardhat. You have a conf file called `hardhat.config.js`. At the beginning of that file you can read the env variable with, for example Dotenv, and after requiring CryptoEnv, like here:
 
 ```javascript
