@@ -1,10 +1,10 @@
 # CryptoEnv
 
-A simple way to manage encrypted env variables
+A simple way to manage encrypted env variables in CLI tools
 
 ## Why CryptoEnv?
 
-Many tools use env variable to manage critical processes. Take for example [Hardhat](https://github.com/NomicFoundation/hardhat). To deploy a smart contract to Ethereum, most likely you have to put your private key in an `.env` file. That file is git-ignored, of course. Still, mistakes are behind the corner and the approach is very risky. For this reason, I created [Hardhood](github.com/secrez/hardhood), a wrapper around Hardhat, to solve this specific issue, but that solution has some problem, and it is maybe too specific. CryptoEnv uses part of the code written for Hardhood, to manage a more generic process.
+Many CLI tools use env variable to manage critical processes. Take for example [Hardhat](https://github.com/NomicFoundation/hardhat). To deploy a smart contract to Ethereum, most likely you have to put your private key in an `.env` file. That file is git-ignored, of course. Still, mistakes are behind the corner and the approach is very risky. For this reason, I created [Hardhood](github.com/secrez/hardhood), a wrapper around Hardhat, to solve this specific issue, but that solution has some problem, and it is maybe too specific. CryptoEnv uses part of the code written for Hardhood, to manage a more generic process.
 
 ## Usage
 
@@ -71,7 +71,7 @@ To avoid that Hardhat gives you an error when you skip the decryption, you can s
 
 Notice that after saving the first encrypted key, for all the others you must use the same password.
 
-### My app shows the request for password more than one time
+### My app shows the request for password more than one~~~~ time
 
 Some app, use child processes. If they run more than one child process, the environment does not look decrypted and CryptoEnv makes a new request.
 
