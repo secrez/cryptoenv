@@ -126,7 +126,11 @@ Options:
 
 ## History
 
-**0.0.1**
+**0.1.3**
+
+- Setting an env variable to avoid making a new request if the parsing is triggered again in the same process
+
+**0.1.0**
 
 - First version
 
