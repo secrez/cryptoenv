@@ -112,14 +112,14 @@ CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/
 If you run cryptoenv without parameters, a help screen will be displayed:
 
 ```
-Welcome to CryptoEnv v0.1.0
+Welcome to CryptoEnv v0.1.3
 Manage encrypted env variable like eating a candy
 
 For help look at
 https://github.com/secrez/cryptoenv#readme
 
 Options:
-  -n, --new  [key]            Add a new key for current project
+  -n, --new  [key name]       Add a new key for current project
   -l, --list                  List the keys' names for the current project
 
 ```

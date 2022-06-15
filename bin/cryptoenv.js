@@ -23,7 +23,7 @@ For help look at
 https://github.com/secrez/cryptoenv#readme
 
 Options:
-  -n, --new  [key]            Add a new key for current project
+  -n, --new  [key name]       Add a new key for current project
   -l, --list                  List the keys' names for the current project
 `);
 
