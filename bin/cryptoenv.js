@@ -17,14 +17,14 @@ if (Object.keys(options).length === 0) {
   console.info(`
 
 Welcome to CryptoEnv v${pkg.version}
-A wrapper around hardhat to safely manage encrypted private keys
+Manage encrypted env variable in CLI applications like eating candies
 
 For help look at
 https://github.com/secrez/cryptoenv#readme
 
 Options:
-  -n, --new  [key name]       Add a new key for current project
-  -l, --list                  List the keys' names for the current project
+  -n, --new  [key name]       Add a new key
+  -l, --list                  List the keys' names
 `);
 
   // eslint-disable-next-line no-process-exit

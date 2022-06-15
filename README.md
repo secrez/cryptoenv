@@ -1,6 +1,6 @@
 # CryptoEnv
 
-A simple way to manage encrypted env variables in CLI tools
+Manage encrypted env variable in CLI applications like eating candies
 
 ## Why CryptoEnv?
 
@@ -113,14 +113,14 @@ If you run cryptoenv without parameters, a help screen will be displayed:
 
 ```
 Welcome to CryptoEnv v0.1.3
-Manage encrypted env variable like eating a candy
+Manage encrypted env variable in CLI applications like eating candies
 
 For help look at
 https://github.com/secrez/cryptoenv#readme
 
 Options:
-  -n, --new  [key name]       Add a new key for current project
-  -l, --list                  List the keys' names for the current project
+  -n, --new  [key name]       Add a new key
+  -l, --list                  List the keys' names
 
 ```
 
