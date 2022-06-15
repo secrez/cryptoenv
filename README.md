@@ -71,9 +71,9 @@ To avoid that Hardhat gives you an error when you skip the decryption, you can s
 
 Notice that after saving the first encrypted key, for all the others you must use the same password.
 
-### My app shows the request for password more than one~~~~ time
+### My app shows the request for password more than one time
 
-Some app, use child processes. If they run more than one child process, the environment does not look decrypted and CryptoEnv makes a new request.
+Some apps launch child processes. If they run more than one child process, the environment does not look decrypted and CryptoEnv makes a new request.
 
 For example, when you run a script with Hardhat, it first runs a first process to compile the smart contracts, then runs a second process to execute the script. In that case, you can just press enter at the first request, and input the password only at the second.
 
