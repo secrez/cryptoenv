@@ -140,7 +140,4 @@ Options:
 
 ## License
 
-```MIT — enjoy it :-)
-
-
-```
+MIT — enjoy it :-)
