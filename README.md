@@ -129,10 +129,14 @@ https://github.com/secrez/cryptoenv#readme
 Options:
   -n, --new  [key name]       Add a new key
   -l, --list                  List the keys' names
-
+  -t, --toggle                Toggle enabled/disabled keys
 ```
 
 ## History
+
+**0.1.6**
+
+- Improve message when keys exist but are disabled
 
 **0.1.4**
 
