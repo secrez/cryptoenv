@@ -103,6 +103,14 @@ require("cryptoenv").parse(() => {
 
 (notice that Hardhat does not set the NODE_ENV variable during tests)
 
+## Enable/disable
+
+It can be annoying be forced to skip the decryption all the time you launch a compilation or a test. To toggle the configuration, i.e., disable or enable the encrypted variable, you can run
+
+```shell
+cryptoEnv -t
+```
+
 ## About security
 
 CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/secrez
