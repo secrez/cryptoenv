@@ -128,7 +128,7 @@ Options:
 
 **0.1.4**
 
-- Toggle disable/enable encrypted keys using option `-t`
+- Toggle disable/enable encrypted keys using option `-t, --toggle`
 
 **0.1.3**
 
