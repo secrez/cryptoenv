@@ -16,7 +16,7 @@ To set up your encrypted variables, you must install CryptoEnv globally
 npm i -g cryptoenv
 ```
 
-Then, to create a new encrypted env variable for `OWNER_KEY` move in the folder where you app is, and run
+Then, to create a new encrypted env variable for `OWNER_KEY` move in the folder where your app is, and run
 
 ```
 cryptoenv -n OWNER_KEY
@@ -27,7 +27,7 @@ CryptoEnv will ask
 1. the data to be encrypted (in this case a private key)
 2. the password to encrypt it
 
-Finally, it will save the encrypted private key in `~/.env`, creating the file if it does not exist.
+Finally, it will save the encrypted private key in `.env`, creating the file if it does not exist.
 
 In the case above, in your `.env` file you will have something like
 
