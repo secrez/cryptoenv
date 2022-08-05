@@ -39,25 +39,34 @@ class CryptoEnv {
   }
 
   async toggle() {
-    if (fs.existsSync(this.envPath)) {
-      let env = fs.readFileSync(this.envPath, "utf8").split("\n");
-      let variables = {};
+    if (await fs.pathExists(this.envPath)) {
+      let env = (await fs.readFile(this.envPath, "utf8")).split("\n");
       let newEnv = [];
-      for (let variable of env) {
-        if (RegExp(`^#{0,1}${this.prefix}([^=]+)=`).test(variable)) {
-          let key = variable.split(this.prefix)[1].split("=")[0];
-          let encVariable = variable.slice(variable.indexOf("=") + 1);
+      for (let row of env) {
+        if (RegExp(`^#{0,1}${this.prefix}([^=]+)=`).test(row)) {
+          let encVariable = row.slice(row.indexOf("=") + 1);
           if (this.isBase64(encVariable)) {
-            if (/^#/.test(variable)) {
-              variable = variable.substring(1);
+            if (/^#/.test(row)) {
+              row = row.substring(1);
             } else {
-              variable = "#" + variable;
+              row = "#" + row;
             }
           }
         }
-        newEnv.push(variable);
+        newEnv.push(row);
       }
       await fs.writeFile(this.envPath, newEnv.join("\n") + "\n");
+    }
+  }
+
+  hasDisabled() {
+    if (fs.existsSync(this.envPath)) {
+      let env = fs.readFileSync(this.envPath, "utf8").split("\n");
+      for (let row of env) {
+        if (RegExp(`^#${this.prefix}([^=]+)=`).test(row)) {
+          return true;
+        }
+      }
     }
   }
 
@@ -65,10 +74,10 @@ class CryptoEnv {
     if (fs.existsSync(this.envPath)) {
       let env = fs.readFileSync(this.envPath, "utf8").split("\n");
       let variables = {};
-      for (let variable of env) {
-        if (RegExp(`^${this.prefix}([^=]+)=`).test(variable)) {
-          let key = variable.split(this.prefix)[1].split("=")[0];
-          let encVariable = variable.slice(variable.indexOf("=") + 1);
+      for (let row of env) {
+        if (RegExp(`^${this.prefix}([^=]+)=`).test(row)) {
+          let key = row.split(this.prefix)[1].split("=")[0];
+          let encVariable = row.slice(row.indexOf("=") + 1);
           if (this.isBase64(encVariable)) {
             variables[key] = encVariable;
           }
@@ -176,7 +185,15 @@ class CryptoEnv {
       }
     }
     if (Object.keys(this.keys).length === 0) {
-      console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
+      if (this.hasDisabled()) {
+        console.info(
+          chalk.grey(
+            `CryptoEnv > some encrypted keys are disabled. Run "cryptoEnv -t" to enable them`
+          )
+        );
+      } else {
+        console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
+      }
       process.env.__decryptionAlreadyDone__ = "TRUE";
       return;
     }

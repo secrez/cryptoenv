@@ -1,6 +1,6 @@
 {
   "name": "cryptoenv",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Manage encrypted env variables",
   "homepage": "https://github.com/secrez/cryptoenv#readme",
   "bugs": {
