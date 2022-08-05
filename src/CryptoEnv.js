@@ -60,10 +60,11 @@ class CryptoEnv {
   }
 
   hasDisabled() {
-    if (fs.existsSync(this.envPath)) {
-      let env = fs.readFileSync(this.envPath, "utf8").split("\n");
-      for (let row of env) {
-        if (RegExp(`^#${this.prefix}([^=]+)=`).test(row)) {
+    const tentativeEnvPath = path.join(process.cwd(), ".env");
+    if (fs.existsSync(tentativeEnvPath)) {
+      let env = fs.readFileSync(tentativeEnvPath, "utf8").split("\n");
+      for (let key of env) {
+        if (RegExp(`^#${this.prefix}([^=]+)=`).test(key)) {
           return true;
         }
       }
@@ -231,6 +232,12 @@ class CryptoEnv {
     if (found) {
       console.info(
         chalk.green(`CryptoEnv > ${found} key${found > 1 ? "s" : ""} decrypted`)
+      );
+    } else if (this.hasDisabled()) {
+      console.info(
+        chalk.grey(
+          `CryptoEnv > some encrypted keys are disabled. Run "cryptoEnv -t" to enable them`
+        )
       );
     } else {
       console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
