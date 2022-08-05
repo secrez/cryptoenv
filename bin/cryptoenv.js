@@ -9,6 +9,8 @@ const options = {};
 
 if ((cmd === "--new" || cmd === "-n") && param.length > 0) {
   options.newKey = param.toUpperCase();
+} else if (cmd === "--toggle" || cmd === "-t") {
+  options.toggle = true;
 } else if (cmd === "--list" || cmd === "-l") {
   options.list = true;
 }
@@ -25,6 +27,7 @@ https://github.com/secrez/cryptoenv#readme
 Options:
   -n, --new  [key name]       Add a new key
   -l, --list                  List the keys' names
+  -t, --toggle                Toggle enabled/disabled keys
 `);
 
   // eslint-disable-next-line no-process-exit

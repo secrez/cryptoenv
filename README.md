@@ -126,6 +126,10 @@ Options:
 
 ## History
 
+**0.1.4**
+
+- Toggle disable/enable encrypted keys using option `-t`
+
 **0.1.3**
 
 - Setting an env variable to avoid making a new request if the parsing is triggered again in the same process

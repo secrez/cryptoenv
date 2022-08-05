@@ -119,4 +119,14 @@ describe("CryptoEnv", async function () {
       expect(process.env.myKey, value);
     });
   });
+
+  describe("toggle", async function () {
+    it("should toggle the variables", async function () {
+      let cryptoEnv = new CryptoEnv({ envPath });
+      await cryptoEnv.toggle();
+      expect(Object.keys(cryptoEnv.list(true).variables).length).equal(0);
+      await cryptoEnv.toggle();
+      expect(Object.keys(cryptoEnv.list(true).variables).length).equal(1);
+    });
+  });
 });

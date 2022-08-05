@@ -17,9 +17,11 @@ class CryptoEnv {
   }
 
   async run() {
-    const { newKey, list } = this.options;
+    const { newKey, list, toggle } = this.options;
     if (newKey) {
       return this.newKey();
+    } else if (toggle) {
+      return this.toggle();
     } else if (list) {
       return this.list();
     } else {
@@ -34,6 +36,29 @@ class CryptoEnv {
         encVariable
       )
     );
+  }
+
+  async toggle() {
+    if (fs.existsSync(this.envPath)) {
+      let env = fs.readFileSync(this.envPath, "utf8").split("\n");
+      let variables = {};
+      let newEnv = [];
+      for (let variable of env) {
+        if (RegExp(`^#{0,1}${this.prefix}([^=]+)=`).test(variable)) {
+          let key = variable.split(this.prefix)[1].split("=")[0];
+          let encVariable = variable.slice(variable.indexOf("=") + 1);
+          if (this.isBase64(encVariable)) {
+            if (/^#/.test(variable)) {
+              variable = variable.substring(1);
+            } else {
+              variable = "#" + variable;
+            }
+          }
+        }
+        newEnv.push(variable);
+      }
+      await fs.writeFile(this.envPath, newEnv.join("\n") + "\n");
+    }
   }
 
   list(asIs) {
