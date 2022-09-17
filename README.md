@@ -125,6 +125,10 @@ require("cryptoenv").parse({
 
 Alternatively, you can set the variable `NO_LOGS_IF_NO_KEYS` in the environment.
 
+**No logs at all?**
+
+If you like to suppress any log, you can use the option `noLogs` or the env variable `NO_LOGS`.
+
 ## About security
 
 CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/secrez
@@ -148,10 +152,10 @@ Options:
 
 ## History
 
-**0.1.7**
+**0.1.8**
 
-- Add `noLogsIfNoKeys` options in `.parse` to skip any logging test if no keys are found
-- Add same skip if an ENV variable `NO_LOGS_IF_NO_KEYS` is set
+- Add `noLogs` option and `NO_LOGS` env variable to suppress any logging
+- Add `noLogsIfNoKeys` option and `NO_LOGS_IF_NO_KEYS` env variable to skip any logging test if no keys are found
 
 **0.1.6**
 
