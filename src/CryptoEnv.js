@@ -16,6 +16,14 @@ class CryptoEnv {
     }
   }
 
+  consoleInfo(force, ...params) {
+    const noLogs =
+      !!this.options.noLogsIfNoKeys || !!process.env.NO_LOGS_IF_NO_KEYS;
+    if (force || !noLogs) {
+      console.info(...params);
+    }
+  }
+
   async run() {
     const { newKey, list, toggle } = this.options;
     if (newKey) {
@@ -87,14 +95,14 @@ class CryptoEnv {
       if (asIs) {
         return { variables, env };
       } else {
-        console.info("Active env variables:");
-        console.info(Object.keys(variables).join("\n"));
+        this.consoleInfo(true, "Active env variables:");
+        this.consoleInfo(true, Object.keys(variables).join("\n"));
       }
     } else {
       if (asIs) {
         return { variables: {}, env: [] };
       }
-      console.info("No encrypted env variables, yet");
+      this.consoleInfo(true, "No encrypted env variables, yet");
     }
   }
 
@@ -141,7 +149,7 @@ class CryptoEnv {
       },
     ]);
     await this.encryptAndSave(variable, password);
-    console.info("Keys successfully stored");
+    this.consoleInfo(true, "Keys successfully stored");
   }
 
   async encryptAndSave(variable, password) {
@@ -187,27 +195,32 @@ class CryptoEnv {
     }
     if (Object.keys(this.keys).length === 0) {
       if (this.hasDisabled()) {
-        console.info(
+        this.consoleInfo(
+          false,
           chalk.grey(
             `CryptoEnv > some encrypted keys are disabled. Run "cryptoEnv -t" to enable them`
           )
         );
       } else {
-        console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
+        this.consoleInfo(
+          false,
+          chalk.grey(`CryptoEnv > no encrypted keys found`)
+        );
       }
       process.env.__decryptionAlreadyDone__ = "TRUE";
       return;
     }
     if (!password) {
       const prompt = require("prompt-sync")({});
-      console.info(
+      this.consoleInfo(
+        true,
         chalk.green(
           "CryptoEnv > Type your password to decrypt the env, or press enter to skip it"
         )
       );
       password = prompt.hide();
       if (!password) {
-        console.info(chalk.grey("CryptoEnv > decryption skipped"));
+        this.consoleInfo(true, chalk.grey("CryptoEnv > decryption skipped"));
         process.env.__decryptionAlreadyDone__ = "TRUE";
         return;
       }
@@ -225,22 +238,27 @@ class CryptoEnv {
         );
         found++;
       } catch (e) {
-        console.info(chalk.red("Wrong password"));
+        this.consoleInfo(true, chalk.red("Wrong password"));
         process.exit(1);
       }
     }
     if (found) {
-      console.info(
+      this.consoleInfo(
+        true,
         chalk.green(`CryptoEnv > ${found} key${found > 1 ? "s" : ""} decrypted`)
       );
     } else if (this.hasDisabled()) {
-      console.info(
+      this.consoleInfo(
         chalk.grey(
+          false,
           `CryptoEnv > some encrypted keys are disabled. Run "cryptoEnv -t" to enable them`
         )
       );
     } else {
-      console.info(chalk.grey(`CryptoEnv > no encrypted keys found`));
+      this.consoleInfo(
+        false,
+        chalk.grey(`CryptoEnv > no encrypted keys found`)
+      );
     }
     process.env.__decryptionAlreadyDone__ = "TRUE";
   }

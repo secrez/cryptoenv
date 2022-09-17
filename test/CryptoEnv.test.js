@@ -120,7 +120,7 @@ describe("CryptoEnv", async function () {
     });
   });
 
-  describe("toggle", async function () {
+  describe.only("toggle", async function () {
     it("should toggle the variables", async function () {
       let cryptoEnv = new CryptoEnv({ envPath });
       await cryptoEnv.toggle();
