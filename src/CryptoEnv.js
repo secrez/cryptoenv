@@ -17,10 +17,13 @@ class CryptoEnv {
   }
 
   consoleInfo(force, ...params) {
-    const noLogs =
-      !!this.options.noLogsIfNoKeys || !!process.env.NO_LOGS_IF_NO_KEYS;
-    if (force || !noLogs) {
-      console.info(...params);
+    if (!(this.options.noLogs || process.env.NO_LOGS)) {
+      if (
+        force ||
+        !(this.options.noLogsIfNoKeys || process.env.NO_LOGS_IF_NO_KEYS)
+      ) {
+        console.info(...params);
+      }
     }
   }
 
@@ -167,10 +170,17 @@ class CryptoEnv {
   }
 
   parse(
+    options,
     filter,
     // for testing only. Do not pass a password, please.
     password
   ) {
+    if (options instanceof RegExp || typeof options !== "object") {
+      password = filter;
+      filter = options;
+    } else {
+      this.options = Object.assign(this.options, options);
+    }
     if (process.env.__decryptionAlreadyDone__) {
       return;
     }

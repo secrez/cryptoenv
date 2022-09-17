@@ -120,11 +120,15 @@ describe("CryptoEnv", async function () {
     });
   });
 
-  describe.only("toggle", async function () {
+  describe("toggle", async function () {
     it("should toggle the variables", async function () {
       let cryptoEnv = new CryptoEnv({ envPath });
       await cryptoEnv.toggle();
       expect(Object.keys(cryptoEnv.list(true).variables).length).equal(0);
+      // cryptoEnv.parse()
+      // console.log(999)
+      // cryptoEnv.parse({noLogsIfNoKeys: true})
+      // console.log(999)
       await cryptoEnv.toggle();
       expect(Object.keys(cryptoEnv.list(true).variables).length).equal(1);
     });
