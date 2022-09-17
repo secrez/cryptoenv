@@ -136,7 +136,8 @@ Options:
 
 **0.1.7**
 
-- Add `noLogsIfNoKeys` options to skip any logging test if no keys are found
+- Add `noLogsIfNoKeys` options in `.parse` to skip any logging test if no keys are found
+- Add same skip if an ENV variable `NO_LOGS_IF_NO_KEYS` is set
 
 **0.1.6**
 

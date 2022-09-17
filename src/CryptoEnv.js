@@ -17,7 +17,9 @@ class CryptoEnv {
   }
 
   consoleInfo(force, ...params) {
-    if (force || !this.options.noLogsIfNoKeys) {
+    const noLogs =
+      !!this.options.noLogsIfNoKeys || !!process.env.NO_LOGS_IF_NO_KEYS;
+    if (force || !noLogs) {
       console.info(...params);
     }
   }
