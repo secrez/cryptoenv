@@ -111,6 +111,20 @@ It can be annoying be forced to skip the decryption all the time you launch a co
 cryptoEnv -t
 ```
 
+## Skip the log when needed
+
+In some cases, the console.log that tells about the encrypted keys can create problems because the output is used as is. For example, flattening a contract with Hardhat.
+
+To avoid seeing the log, you can add the options `noLogsIfNoKeys` like
+
+```javascript
+require("cryptoenv").parse({
+  noLogsIfNoKeys: true,
+});
+```
+
+Alternatively, you can set the variable `NO_LOGS_IF_NO_KEYS` in the environment.~~~~
+
 ## About security
 
 CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/secrez
