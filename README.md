@@ -123,7 +123,7 @@ require("cryptoenv").parse({
 });
 ```
 
-Alternatively, you can set the variable `NO_LOGS_IF_NO_KEYS` in the environment.~~~~
+Alternatively, you can set the variable `NO_LOGS_IF_NO_KEYS` in the environment.
 
 ## About security
 
