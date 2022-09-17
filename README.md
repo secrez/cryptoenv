@@ -134,6 +134,10 @@ Options:
 
 ## History
 
+**0.1.7**
+
+- Add `noLogsIfNoKeys` options to skip any logging test if no keys are found
+
 **0.1.6**
 
 - Improve message when keys exist but are disabled
