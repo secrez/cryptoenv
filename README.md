@@ -4,7 +4,8 @@ Manage encrypted env variable in CLI applications like eating candies
 
 ## Why CryptoEnv?
 
-Many CLI tools use env variable to manage critical processes. Take for example [Hardhat](https://github.com/NomicFoundation/hardhat). To deploy a smart contract to Ethereum, most likely you have to put your private key in an `.env` file. That file is git-ignored, of course. Still, mistakes are behind the corner and the approach is very risky. For this reason, I created [Hardhood](github.com/secrez/hardhood), a wrapper around Hardhat, to solve this specific issue, but that solution has some problem, and it is maybe too specific. CryptoEnv uses part of the code written for Hardhood, to manage a more generic process.
+Many CLI tools use env variable to manage critical processes. Take for example [Hardhat](https://github.com/NomicFoundation/hardhat). To deploy a smart contract to Ethereum, most likely you have to put your private key in an `.env` file. That file is git-ignored, of course. Still, mistakes are behind the corner and the approach is very risky. For this reason, I created [Hardhood](github.com/secrez/hardhood), a wrapper around Hardhat, to manage encrypted ENV variables, but that solution has some problem, and it is maybe too specific.
+CryptoEnv uses part of the code I wrote for Hardhood, to manage a more generic process.
 
 ## Usage
 
