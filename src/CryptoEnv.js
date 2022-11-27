@@ -10,28 +10,26 @@ class CryptoEnv {
     this.prefix = this.options.prefix || "cryptoEnv_";
     if (this.options.cli) {
       const currentDir = process.cwd();
-      this.envPath = path.join(currentDir, ".env");
+      this.envPath = options.envPath || path.join(currentDir, ".env");
     } else {
       this.envPath = options.envPath;
     }
   }
 
   consoleInfo(force, ...params) {
-    if (!(this.options.noLogs || process.env.NO_LOGS)) {
-      if (
-        force ||
-        !(this.options.noLogsIfNoKeys || process.env.NO_LOGS_IF_NO_KEYS)
-      ) {
-        console.info(...params);
-      }
+    if (
+      !this.options.skipConsole &&
+      (force || this.options.alwaysLog || process.env.ALWAYS_LOG)
+    ) {
+      console.info(...params);
     }
   }
 
   async run() {
-    const { newKey, list, toggle } = this.options;
+    const { newKey, list, toggle, enable, disable } = this.options;
     if (newKey) {
       return this.newKey();
-    } else if (toggle) {
+    } else if (toggle || enable || disable) {
       return this.toggle();
     } else if (list) {
       return this.list();
@@ -50,16 +48,28 @@ class CryptoEnv {
   }
 
   async toggle() {
+    const { enable, disable } = this.options;
     if (await fs.pathExists(this.envPath)) {
       let env = (await fs.readFile(this.envPath, "utf8")).split("\n");
       let newEnv = [];
       for (let row of env) {
-        if (RegExp(`^#{0,1}${this.prefix}([^=]+)=`).test(row)) {
+        if (
+          RegExp(
+            `^${enable ? "#" : disable ? "" : "#{0,1}"}${this.prefix}([^=]+)=`
+          ).test(row)
+        ) {
+          let encName = row.slice(0, row.indexOf("="));
           let encVariable = row.slice(row.indexOf("=") + 1);
           if (this.isBase64(encVariable)) {
             if (/^#/.test(row)) {
               row = row.substring(1);
+              this.consoleInfo(
+                true,
+                chalk.green("Enabling"),
+                encName.substring(1)
+              );
             } else {
+              this.consoleInfo(true, chalk.red("Disabling"), encName);
               row = "#" + row;
             }
           }
@@ -157,12 +167,14 @@ class CryptoEnv {
 
   async encryptAndSave(variable, password) {
     const pwd = Crypto.SHA3(password);
-    const { variables } = this.list(true);
-    for (let key in variables) {
-      try {
-        Crypto.decrypt(variables[key], pwd);
-      } catch (e) {
-        throw new Error("This is not the password used in the past");
+    if (this.options.forcePreviousPwd) {
+      const { variables } = this.list(true);
+      for (let key in variables) {
+        try {
+          Crypto.decrypt(variables[key], pwd);
+        } catch (e) {
+          throw new Error("This is not the password used in the past");
+        }
       }
     }
     let encVariable = Crypto.encrypt(variable, pwd);
@@ -248,8 +260,8 @@ class CryptoEnv {
         );
         found++;
       } catch (e) {
-        this.consoleInfo(true, chalk.red("Wrong password"));
-        process.exit(1);
+        // this.consoleInfo(true, chalk.red("Wrong password"));
+        // process.exit(1);
       }
     }
     if (found) {
@@ -285,7 +297,14 @@ class CryptoEnv {
     } else {
       env.push(`${this.prefix}${key}=` + value);
     }
-    await fs.writeFile(this.envPath, env.join("\n") + "\n");
+    let str = "";
+    for (let e of env) {
+      if (!this.options.noOptimization && /^[\s\t]*$/.test(e)) {
+        continue;
+      }
+      str += e + "\n";
+    }
+    await fs.writeFile(this.envPath, str);
   }
 }
 
