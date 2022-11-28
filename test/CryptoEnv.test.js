@@ -26,7 +26,7 @@ describe("CryptoEnv", async function () {
 
   describe("list", async function () {
     it("should return the env plus the existing encrypted variables", async function () {
-      let cryptoEnv = new CryptoEnv({ envPath, skipConsole: true });
+      let cryptoEnv = new CryptoEnv({ envPath, noLogs: true });
 
       const { variables } = cryptoEnv.list(true);
       expect(Object.keys(variables).length).equal(2);
@@ -55,7 +55,7 @@ describe("CryptoEnv", async function () {
     it("should encrypt a new variable and save it in .env", async function () {
       let newKey = "privateKey";
       let value1 = "7fys8f7ywbfwbyef8sbfs8dfysd8cysdchsdcysc";
-      let cryptoEnv = new CryptoEnv({ envPath, skipConsole: true, newKey });
+      let cryptoEnv = new CryptoEnv({ envPath, noLogs: true, newKey });
       await cryptoEnv.encryptAndSave(value1, password);
       const { variables } = cryptoEnv.list(true);
       expect(Object.keys(variables).length).equal(3);
@@ -68,7 +68,7 @@ describe("CryptoEnv", async function () {
     it("should replace an existing variable and save it in .env", async function () {
       let newKey = "myKey";
       let value1 = "workdansdaBANK9987";
-      let cryptoEnv = new CryptoEnv({ envPath, skipConsole: true, newKey });
+      let cryptoEnv = new CryptoEnv({ envPath, noLogs: true, newKey });
       await cryptoEnv.encryptAndSave(value1, password);
       const { variables } = cryptoEnv.list(true);
       expect(Object.keys(variables).length).equal(2);
@@ -83,8 +83,8 @@ describe("CryptoEnv", async function () {
       let value1 = "7fys8f7ywbfwbyef8sbfs8dfysd8cysdchsdcysc";
       let cryptoEnv = new CryptoEnv({
         envPath,
-        skipConsole: true,
         newKey,
+        alwaysLog: true,
         forcePreviousPwd: true,
       });
       await assertThrowsMessage(
@@ -99,7 +99,7 @@ describe("CryptoEnv", async function () {
       let value1 = "7fys8f7ywbfwbyef8sbfs8dfysd8cysdchsdcysc";
       let cryptoEnv = new CryptoEnv({
         envPath: envPath + 2,
-        skipConsole: true,
+        noLogs: true,
         newKey,
         forcePreviousPwd: true,
       });
@@ -116,7 +116,7 @@ describe("CryptoEnv", async function () {
     it("should parse the .env file and decrypt the variables", async function () {
       delete process.env.myKey;
       require("dotenv").config({ path: envPath });
-      let cryptoEnv = new CryptoEnv({ skipConsole: true });
+      let cryptoEnv = new CryptoEnv({ noLogs: true });
       cryptoEnv.parse(undefined, password);
       expect(process.env.myKey).equal(value);
     });
@@ -125,7 +125,7 @@ describe("CryptoEnv", async function () {
       delete process.env.myKey;
       delete process.env.myOtherKey;
       require("dotenv").config({ path: envPath });
-      let cryptoEnv = new CryptoEnv({ skipConsole: true });
+      let cryptoEnv = new CryptoEnv({ noLogs: true });
       cryptoEnv.parse(/argoPlan/, password);
       expect(process.env.myKey).equal(undefined);
       delete process.env.__decryptionAlreadyDone__;
@@ -137,7 +137,7 @@ describe("CryptoEnv", async function () {
     it("should parse with a filter (regex) and some option", async function () {
       delete process.env.myOtherKey;
       require("dotenv").config({ path: envPath });
-      let cryptoEnv = new CryptoEnv({ skipConsole: true });
+      let cryptoEnv = new CryptoEnv({ noLogs: true });
       cryptoEnv.parse({ alwaysLog: true }, /Other/, password2);
       expect(cryptoEnv.options.alwaysLog).equal(true);
       expect(process.env.myOtherKey).equal(value2);
@@ -147,7 +147,7 @@ describe("CryptoEnv", async function () {
       delete process.env.myKey;
       process.env.nodeENV = "test";
       require("dotenv").config({ path: envPath });
-      let cryptoEnv = new CryptoEnv({ skipConsole: true });
+      let cryptoEnv = new CryptoEnv({ noLogs: true });
       cryptoEnv.parse(() => process.env.nodeENV !== "test", password);
       expect(process.env.myKey).equal(undefined);
       delete process.env.__decryptionAlreadyDone__;
@@ -160,7 +160,7 @@ describe("CryptoEnv", async function () {
       this.timeout(60000);
       // to verify it manually
       require("dotenv").config({ path: envPath });
-      let cryptoEnv = new CryptoEnv({ skipConsole: true });
+      let cryptoEnv = new CryptoEnv({ noLogs: true });
       cryptoEnv.parse();
       expect(process.env.myKey, value);
     });
@@ -170,7 +170,8 @@ describe("CryptoEnv", async function () {
     it("should toggle the variables", async function () {
       let cryptoEnv = new CryptoEnv({
         envPath,
-        skipConsole: true,
+        noLogs: true,
+        listOnlyActive: true,
       });
       await cryptoEnv.toggle();
       expect(Object.keys(cryptoEnv.list(true).variables).length).equal(0);
@@ -181,10 +182,11 @@ describe("CryptoEnv", async function () {
 
   describe("disable", async function () {
     it("should disable the variables", async function () {
+      process.env.NO_LOGS = true;
       let cryptoEnv = new CryptoEnv({
         envPath,
-        skipConsole: true,
         disable: true,
+        listOnlyActive: true,
       });
       await cryptoEnv.toggle();
       expect(Object.keys(cryptoEnv.list(true).variables).length).equal(0);
@@ -195,14 +197,15 @@ describe("CryptoEnv", async function () {
     it("should enable the variables", async function () {
       let cryptoEnv = new CryptoEnv({
         envPath,
-        skipConsole: true,
+        noLogs: true,
         disable: true,
+        listOnlyActive: true,
       });
       await cryptoEnv.toggle();
       expect(Object.keys(cryptoEnv.list(true).variables).length).equal(0);
       cryptoEnv = new CryptoEnv({
         envPath,
-        skipConsole: true,
+        noLogs: true,
         enable: true,
       });
       await cryptoEnv.toggle();

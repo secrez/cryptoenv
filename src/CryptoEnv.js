@@ -8,6 +8,7 @@ class CryptoEnv {
   constructor(options = {}) {
     this.options = options;
     this.prefix = this.options.prefix || "cryptoEnv_";
+    /* istanbul ignore if */
     if (this.options.cli) {
       const currentDir = process.cwd();
       this.envPath = options.envPath || path.join(currentDir, ".env");
@@ -16,15 +17,16 @@ class CryptoEnv {
     }
   }
 
+  /* istanbul ignore next */
   consoleInfo(force, ...params) {
-    if (
-      !this.options.skipConsole &&
-      (force || this.options.alwaysLog || process.env.ALWAYS_LOG)
-    ) {
-      console.info(...params);
+    if (!(this.options.noLogs || process.env.NO_LOGS)) {
+      if (force || this.options.alwaysLog || process.env.ALWAYS_LOG) {
+        console.info(...params);
+      }
     }
   }
 
+  /* istanbul ignore next */
   async run() {
     const { newKey, list, toggle, enable, disable } = this.options;
     if (newKey) {
@@ -96,9 +98,16 @@ class CryptoEnv {
     if (fs.existsSync(this.envPath)) {
       let env = fs.readFileSync(this.envPath, "utf8").split("\n");
       let variables = {};
+      let active = true;
       for (let row of env) {
-        if (RegExp(`^${this.prefix}([^=]+)=`).test(row)) {
-          let key = row.split(this.prefix)[1].split("=")[0];
+        if (RegExp(`^#{0,1}${this.prefix}([^=]+)=`).test(row)) {
+          if (/^#/.test(row)) {
+            active = false;
+            if (this.options.listOnlyActive) {
+              continue;
+            }
+          }
+          let key = row.replace(/^#/, "").split(this.prefix)[1].split("=")[0];
           let encVariable = row.slice(row.indexOf("=") + 1);
           if (this.isBase64(encVariable)) {
             variables[key] = encVariable;
@@ -108,7 +117,11 @@ class CryptoEnv {
       if (asIs) {
         return { variables, env };
       } else {
-        this.consoleInfo(true, "Active env variables:");
+        this.consoleInfo(
+          true,
+          active ? "Active" : "Disabled",
+          "env variables:"
+        );
         this.consoleInfo(true, Object.keys(variables).join("\n"));
       }
     } else {
@@ -119,6 +132,7 @@ class CryptoEnv {
     }
   }
 
+  /* istanbul ignore next */
   async newKey() {
     let { variable } = await inquirer.prompt([
       {
@@ -232,6 +246,7 @@ class CryptoEnv {
       process.env.__decryptionAlreadyDone__ = "TRUE";
       return;
     }
+    /* istanbul ignore if */
     if (!password) {
       const prompt = require("prompt-sync")({});
       this.consoleInfo(

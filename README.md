@@ -4,11 +4,50 @@ Manage encrypted env variable in CLI applications like eating candies
 
 ## Why CryptoEnv?
 
-Many CLI tools use env variable to manage critical processes. Take for example [Hardhat](https://github.com/NomicFoundation/hardhat). To deploy a smart contract to Ethereum, most likely you have to put your private key in an `.env` file. That file is git-ignored, of course. Still, mistakes are behind the corner and the approach is very risky. For this reason, I created [Hardhood](github.com/secrez/hardhood), a wrapper around Hardhat, to solve this specific issue, but that solution has some problem, and it is maybe too specific. CryptoEnv uses part of the code written for Hardhood, to manage a more generic process.
+Many CLI tools use env variable to manage critical processes.
+
+Take for example [Hardhat](https://github.com/NomicFoundation/hardhat) — a framework to develop, test and deploy smart contracts to an EVM-compatible blockchain.
+
+To deploy a smart contract, most likely you have to put your private key in an `.env` file. That file is git-ignored, of course. Still, mistakes are behind the corner and the approach is very risky.
+
+The solution is to encrypt the variables in the `.env` file.
 
 ## Usage
 
 ### In the shell
+
+If you run the cryptoenv CLI without parameters, a help screen like the one below will be displayed:
+
+```
+Welcome to CryptoEnv v0.2.0
+Manage encrypted env variable in CLI applications like eating candies
+
+For help look at
+https://github.com/secrez/cryptoenv#readme
+
+Options:
+  -n, --new -key [key name]       Add a new key
+  -l, --list                      List the keys' names
+  -e, --enable                    Enables the keys
+  -d, --disable                   Disables the keys
+  -t, --toggle                    Toggle enabled/disabled keys
+  -p, --env-path [env file path]  Specifies where the env file path
+  -f, --force-previous-pwd        Forces to use the same password
+                                    used previously (like until v0.1.8)
+  -u, --no-optimization           Skips the .env optimization, that removes
+                                    empty rows
+
+Notes:
+  --e has priority on --disable and --toggle
+  --disable has priority on --toggle
+  if --list is set, -e, -d or -t are ignored
+
+Example;
+  cryptoenv -n MAINNET_PK              Add the new key called MAINNET_PK
+  cryptoenv -n MAINNET_PK -f           Add the new key called MAINNET_PK forcing to
+                                         use the same password used previously
+  cryptoenv -lp \`pwd\`/../.prod-env   Lists the keys in the .prod-env file
+```
 
 To set up your encrypted variables, you must install CryptoEnv globally
 
@@ -38,6 +77,16 @@ cryptoEnv_OWNER_KEY=vnJSFJ5E4ZHT1hd8tmMduc1HbQqmkXE/dReUmjHFvud5DsquU6VrOZ+1K3wF
 Starting from v0.2.0, you can use different passwords to encrypt the different variables.
 This allows a team to share an encrypted env, knowing that team members can access only their own keys.
 
+#### Enable/disable
+
+It can be annoying be forced to skip the decryption all the time you launch a compilation or a test. To toggle the configuration, i.e., disable or enable the encrypted variables, you can run
+
+```shell
+cryptoEnv -t
+```
+
+but it is better to use `--enable` and `--disable` to explicit call for a specific action.
+
 ### In your node app
 
 Install it as usual
@@ -47,6 +96,7 @@ npm i cryptoenv
 ```
 
 Let's do the case of Hardhat.
+
 You have a conf file called `hardhat.config.js`. At the beginning of that file you can read the env variables with, for example Dotenv, and after requiring CryptoEnv, like here:
 
 ```javascript
@@ -68,15 +118,15 @@ later in the file, when you configure Hardhat to use your private keys, you can 
     ...
 ```
 
-If you just press enter when asked for the password, the decryption will be ignored. CryptoEnv will throw an error only if the password is wrong.
+If you just press enter when asked for the password, the decryption will be ignored.
 
-To avoid that Hardhat gives you an error when you skip the decryption, you can set up a variable OWNER_KEY in the `.env` file, with a testing key. When you use CryptoEnv, the variable will be overwritten.
+Since v0.2.0, CryptoEnv does not throw an error if the password is wrong, it will just ignore it. This is necessary to manage variable encrypted with different passwords. Until v0.1.8, it was throwing because all the variables in a single `.env` had to been encrypted using the same password.
 
-Notice that after saving the first encrypted key, for all the others you must use the same password.
+As a tip to avoid that Hardhat gives you an error when you skip the decryption, you can set up a variable OWNER_KEY in the `.env` file, with a testing key. When you use CryptoEnv, the variable will be overwritten with the decrypted value.
 
 ### My app shows the request for password more than one time
 
-Some apps launch child processes. If they run more than one child process, the environment does not look decrypted and CryptoEnv makes a new request.
+Some apps launch more than a single child processes. In this case, the environment can be reinstated and it does not look decrypted, so that CryptoEnv makes a new request.
 
 For example, when you run a script with Hardhat, it first runs a first process to compile the smart contracts, then runs a second process to execute the script. In that case, you can just press enter at the first request, and input the password only at the second.
 
@@ -117,16 +167,6 @@ You can also decide to use different prefix for the encrypted variable. By defau
 
 Finally, if your variables are in a file different than `.env` in the root of the repo, you can specify the full path with the option `--env-path` launching the CLI.~~~~
 
-## Enable/disable
-
-It can be annoying be forced to skip the decryption all the time you launch a compilation or a test. To toggle the configuration, i.e., disable or enable the encrypted variable, you can run
-
-```shell
-cryptoEnv -t
-```
-
-Since 0.2.0, `--toggle` is deprecated. Better to use `--enable` and `--disable` to explicit call for a specific action.
-
 ## Show the log even when not needed
 
 The console.log that tells about the encrypted keys can create problems because the output is used as is. For this reason, starting from version 0.2.0, by default, cryptoenv returns a feedback only if it finds active encrypted variables in `.env`.
@@ -149,49 +189,12 @@ If you like to suppress any log, you can use the option `noLogs` or the env vari
 
 CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/secrez
 
-## Help
-
-If you run cryptoenv without parameters, a help screen like the one below will be displayed:
-
-```
-Welcome to CryptoEnv v0.2.0
-Manage encrypted env variable in CLI applications like eating candies
-
-For help look at
-https://github.com/secrez/cryptoenv#readme
-
-Options:
-  -n, --new -key [key name]       Add a new key
-  -l, --list                      List the keys' names
-  -e, --enable                    Enables the keys
-  -d, --disable                   Disables the keys
-  -t, --toggle                    Toggle enabled/disabled keys
-  -p, --env-path [env file path]  Specifies where the env file path
-  -f, --force-previous-pwd        Forces to use the same password
-                                    used previously (like until v0.1.8)
-  -u, --no-optimization           Skips the .env optimization, that removes
-                                    empty rows
-
-Notes:
-  --e has priority on --disable and --toggle
-  --disable has priority on --toggle
-  if --list is set, -e, -d or -t are ignored
-
-Example;
-  cryptoenv -n MAINNET_PK              Add the new key called MAINNET_PK
-  cryptoenv -n MAINNET_PK -f           Add the new key called MAINNET_PK forcing to
-                                         use the same password used previously
-  cryptoenv -lp \`pwd\`/../.prod-env   Lists the keys in the .prod-env file
-```
-
 ## History
 
 **0.2.0 - Breaking changes**
 
 - Reverse the behavior. If not specified, it returns feedback only if there are encrypted variables in the env
-- Add `alwaysLog` option and `ALWAYS_LOG` env variable to show the log all the time
-- Ignores previous options `noLogs` and `noLogsIfNoKeys`
-- Explicit `filter` option to filter the variables
+- Add `alwaysLog` option and `ALWAYS_LOG` env variable to show the log all the time, disabling the previous option `noLogsIfNoKeys`, which was forcing the opposite behavior
 - The CLI `--toggle` option returns an explanation feedback
 - The CLI `--list` option returns also the not-active variables
 - Calling `cryptoenv` without options shows the help
@@ -227,7 +230,3 @@ Example;
 ## License
 
 MIT — enjoy it :-)
-
-```
-
-```
