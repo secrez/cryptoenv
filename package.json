@@ -1,12 +1,15 @@
 {
-  "name": "cryptoenv",
-  "version": "0.2.0",
+  "name": "@secrez/cryptoenv",
+  "version": "0.2.1",
   "description": "Manage encrypted env variables",
   "homepage": "https://github.com/secrez/cryptoenv#readme",
   "bugs": {
     "url": "https://github.com/secrez/cryptoenv/issues"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Francesco Sullo <francesco@sullo.co>",
   "main": "index.js",
   "repository": {
