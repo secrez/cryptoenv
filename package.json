@@ -1,6 +1,6 @@
 {
   "name": "@secrez/cryptoenv",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Manage encrypted env variables",
   "homepage": "https://github.com/secrez/cryptoenv#readme",
   "bugs": {
@@ -26,7 +26,7 @@
     "test-only": "cross-env NODE_ENV=test ./node_modules/.bin/mocha test/*.test.js --exit",
     "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text ./node_modules/.bin/_mocha test/*.test.js --exit",
     "posttest": "nyc check-coverage --statements 90 --branches 75 --functions 100 --lines 90",
-    "postinstall": "./post-install.sh",
+    "postinstall": "if [ -z \"${npm_config_user_agent##*node_modules*}\" ]; then ./post-install.sh; else echo 'Installed as a dependency, skipping setup script'; fi",
     "prepare": "husky install",
     "format": "npx prettier --write ."
   },

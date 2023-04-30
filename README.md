@@ -192,6 +192,10 @@ CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/
 
 ## History
 
+**0.2.2**
+
+- skipping post-install when installed in production
+
 **0.2.1**
 
 - moved from cryptoenv to @secrez/cryptoenv to make more clear the connection with Secrez
