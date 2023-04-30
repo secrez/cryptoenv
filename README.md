@@ -52,7 +52,7 @@ Example;
 To set up your encrypted variables, you must install CryptoEnv globally
 
 ```
-npm i -g cryptoenv
+npm i -g @secrez/cryptoenv
 ```
 
 Then, to create a new encrypted env variable for `OWNER_KEY` move in the folder where your app is, and run
@@ -92,7 +92,7 @@ but it is better to use `--enable` and `--disable` to explicit call for a specif
 Install it as usual
 
 ```
-npm i cryptoenv
+npm i @secrez/cryptoenv
 ```
 
 Let's do the case of Hardhat.
@@ -101,7 +101,7 @@ You have a conf file called `hardhat.config.js`. At the beginning of that file y
 
 ```javascript
 require("dotenv").config();
-require("cryptoenv").parse();
+require("@secrez/cryptoenv").parse();
 ```
 
 later in the file, when you configure Hardhat to use your private keys, you can have something like
@@ -135,7 +135,7 @@ For example, when you run a script with Hardhat, it first runs a first process t
 Sometimes you have in a repo multiple apps, and it is possible that you do not want to share data with them. You can filter your variables using RegExp like here:
 
 ```javascript
-require("cryptoenv").parse(/^hardhat/);
+require("@secrez/cryptoenv").parse(/^hardhat/);
 ```
 
 and take only the variables that start with "hardhat".
@@ -143,13 +143,13 @@ You can also pass a function that returns a boolean, like:
 
 ```javascript
 const words = ["home", "office", "street"];
-require("cryptoenv").parse((e) => words.includes(e));
+require("@secrez/cryptoenv").parse((e) => words.includes(e));
 ```
 
 For example, if you want to skip the decryption when testing the contracts with Hardhat, you could require it as:
 
 ```javascript
-require("cryptoenv").parse(() => {
+require("@secrez/cryptoenv").parse(() => {
   return NODE_ENV !== "test";
 });
 ```
@@ -159,8 +159,9 @@ Notice that Hardhat does not set the NODE_ENV variable during tests, you must se
 You can also mix the settings, like
 
 ```javascript
+const cryptoEnv = require("@secrez/cryptoenv");
 const words = ["home", "office", "street"];
-require("cryptoenv").parse({ alwaysLog: true }, (e) => words.includes(e));
+cryptoEnv.parse({ alwaysLog: true }, (e) => words.includes(e));
 ```
 
 You can also decide to use different prefix for the encrypted variable. By default, the prefix is `cryptoEnv_`, but you can change it with the option `prefix`.
@@ -174,7 +175,7 @@ The console.log that tells about the encrypted keys can create problems because 
 If you want that the log is showed anytime, use the options `alwaysLog`, like
 
 ```javascript
-require("cryptoenv").parse({
+require("@secrez/cryptoenv").parse({
   alwaysLog: true,
 });
 ```
@@ -190,6 +191,11 @@ If you like to suppress any log, you can use the option `noLogs` or the env vari
 CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/secrez
 
 ## History
+
+**0.2.1**
+
+- moved from cryptoenv to @secrez/cryptoenv to make more clear the connection with Secrez
+- at the same time cryptoenv has been deprecated
 
 **0.2.0 - Breaking changes**
 
