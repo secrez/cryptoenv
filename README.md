@@ -168,7 +168,18 @@ cryptoEnv.parse({ alwaysLog: true }, (e) => words.includes(e));
 
 You can also decide to use different prefix for the encrypted variable. By default, the prefix is `cryptoEnv_`, but you can change it with the option `prefix`.
 
-Finally, if your variables are in a file different than `.env` in the root of the repo, you can specify the full path with the option `--env-path` launching the CLI.~~~~
+Finally, if your variables are in a file different than `.env` in the root of the repo, you can specify the full path with the option `--env-path` launching the CLI.
+
+When using hardhat, you can also specify when running cryptoenv, puttin in your `hardhat.config.js` file a code like this:
+
+```javascript
+const taskName = process.argv[2];
+if (/(deploy|console)/.test(taskName)) {
+  require("cryptoenv").parse();
+}
+```
+
+This way you ask cryptoenv to decrypt the variables only when you run the deploy or the console task.
 
 ## Show the log even when not needed
 
