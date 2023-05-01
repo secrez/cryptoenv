@@ -1,5 +1,7 @@
 # CryptoEnv
 
+[![Join the chat at https://gitter.im/secrez/cryptoenv](https://badges.gitter.im/secrez/cryptoenv.svg)](https://gitter.im/secrez/cryptoenv?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Manage encrypted env variable in CLI applications like eating candies
 
 ## Why CryptoEnv?
