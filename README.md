@@ -205,6 +205,10 @@ CryptoEnv uses the package @secrez/crypto from Secrez https://github.com/secrez/
 
 ## History
 
+**0.2.3**
+
+- remove post-install, causing issues on Windows installs
+
 **0.2.2**
 
 - skipping post-install when installed in production
